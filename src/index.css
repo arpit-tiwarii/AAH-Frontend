@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Podium — Navy & Gold token layer
+   Colors are space-separated RGB channels so Tailwind utilities
+   can apply /opacity modifiers. Dark = :root (default);
+   light overrides only the variable values (the .theme-light
+   class is toggled on <html> by ThemeContext).
+   ============================================================ */
+:root {                          /* DARK (default) */
+  --bg: 10 20 36;                /* #0A1424 navy-ink */
+  --surface: 18 35 63;           /* #12233F card */
+  --surface-2: 26 46 79;         /* #1A2E4F raised */
+  --border: 37 57 92;            /* #25395C hairline */
+  --text: 244 241 232;           /* #F4F1E8 ivory */
+  --text-muted: 169 180 198;     /* #A9B4C6 */
+  --text-subtle: 110 124 147;    /* #6E7C93 */
+  --primary: 201 162 75;         /* #C9A24B brass gold */
+  --primary-hover: 216 180 94;   /* #D8B45E */
+  --primary-contrast: 10 20 36;  /* navy text on gold */
+  --steel: 159 178 201;          /* #9FB2C9 secondary */
+  --success: 87 160 110;         /* #57A06E muted green */
+  --danger: 193 90 78;           /* #C15A4E muted brick */
+  --ring: 201 162 75;            /* gold focus ring */
+
+  /* Height of the fixed navbar in its expanded (unscrolled) state. Navbar.jsx
+     re-publishes the measured value on mount/resize; this is the fallback for
+     the first paint. Page padding derives from it — see .page-shell. */
+  --navbar-h: 105px;
+}
+
+.theme-light {                   /* LIGHT */
+  --bg: 244 241 232;             /* #F4F1E8 ivory paper */
+  --surface: 251 249 243;        /* #FBF9F3 */
+  --surface-2: 239 234 221;      /* #EFEADD */
+  --border: 224 216 198;         /* #E0D8C6 */
+  --text: 18 35 63;              /* #12233F navy ink */
+  --text-muted: 90 107 132;      /* #5A6B84 */
+  --text-subtle: 139 152 172;    /* #8B98AC */
+  --primary: 168 124 36;         /* #A87C24 deep brass */
+  --primary-hover: 140 100 22;   /* #8C6416 */
+  --primary-contrast: 255 255 255;
+  --steel: 74 107 146;           /* #4A6B92 */
+  --success: 46 125 79;          /* #2E7D4F */
+  --danger: 178 58 46;           /* #B23A2E */
+  --ring: 168 124 36;
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-content font-sans antialiased overflow-x-hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight text-content;
+  }
+
+  /* Visible keyboard focus everywhere */
+  :focus-visible {
+    outline: 2px solid rgb(var(--ring));
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: rgb(var(--primary) / 0.28);
+  }
+}
+
+@layer components {
+  /* Athletic condensed eyebrow / kicker */
+  .eyebrow {
+    @apply inline-block font-display font-semibold uppercase tracking-[0.22em] text-xs text-primary;
+  }
+
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-hover text-primary-contrast font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg shadow-primary/30 uppercase tracking-wider;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent border-2 border-primary text-primary hover:bg-primary hover:text-primary-contrast font-bold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 uppercase tracking-wider;
+  }
+
+  .card {
+    @apply bg-surface border border-border rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/20 hover:border-primary/50;
+  }
+
+  .glass-panel {
+    @apply bg-surface/70 backdrop-blur-md border border-border rounded-2xl;
+  }
+
+  .nav-link {
+    @apply text-content-muted hover:text-primary transition-colors duration-200 font-medium text-sm tracking-wide;
+  }
+
+  /* Top padding for every routed page that starts below the fixed navbar.
+     Replaces a hardcoded pt-24 (96px) that was shorter than the navbar
+     itself, which tucked the first row of content under the header. */
+  .page-shell {
+    padding-top: calc(var(--navbar-h) + 1.5rem);
+  }
+
+  /* Sticky column that must park below the navbar, not under it. */
+  .sticky-under-nav {
+    position: sticky;
+    top: calc(var(--navbar-h) + 1rem);
+  }
+
+  .theme-toggle {
+    @apply inline-flex items-center justify-center w-10 h-10 rounded-full border border-border text-content hover:bg-surface-2 transition-colors;
+  }
+
+  .theme-toggle-mobile {
+    @apply w-full h-auto gap-2 rounded-lg px-4 py-3 text-sm font-semibold;
+  }
+
+  /* Signature: running-track lane lines (gold hairlines) */
+  .lane-rule {
+    height: 6px;
+    width: 100%;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgb(var(--primary) / 0.55) 0 1px,
+      transparent 1px 3px
+    );
+  }
+}
+
+/* ============================================================
+   Fallbacks for Tailwind DEFAULT color utilities still present
+   in not-yet-migrated markup, so light mode never shows
+   white-on-ivory. (Two-class specificity beats the 1-class
+   Tailwind utility without !important.) These shrink as files
+   migrate to the semantic tokens.
+   ============================================================ */
+.theme-light .text-white { color: rgb(var(--text)); }
+.theme-light .text-gray-200,
+.theme-light .text-gray-300,
+.theme-light .text-gray-400 { color: rgb(var(--text-muted)); }
+.theme-light .text-gray-500 { color: rgb(var(--text-subtle)); }
+.theme-light .border-white\/10 { border-color: rgb(var(--border)); }
+
+/* Hero sits on a dark image overlay in BOTH themes — keep its text light. */
+.theme-hero .text-white { color: #fff; }
+.theme-hero .text-gray-300,
+.theme-hero .text-gray-400 { color: rgb(255 255 255 / 0.82); }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgb(var(--surface));
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--border));
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--primary));
+}
+
+/* Respect reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
