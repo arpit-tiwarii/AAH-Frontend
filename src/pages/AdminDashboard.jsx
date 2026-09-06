@@ -101,8 +101,14 @@ const AdminDashboard = () => {
 
   const generatePayments = async (e) => {
     e.preventDefault();
+    const year = Number(generateForm.year);
+    if (generateForm.year === '' || !Number.isInteger(year)) {
+      toast.error('Please enter a valid year.');
+      return;
+    }
+
     try {
-      const res = await api.post(`/payments/generate`, generateForm);
+      const res = await api.post(`/payments/generate`, { ...generateForm, year });
       toast.success(res.data.message);
       fetchData();
     } catch (error) {
@@ -616,7 +622,7 @@ const approvedStudents = (Array.isArray(students) ? students : [])
                     <input
                       type="number"
                       value={generateForm.year}
-                      onChange={e => setGenerateForm({ ...generateForm, year: e.target.value })}
+                      onChange={e => setGenerateForm({ ...generateForm, year: e.target.value === '' ? '' : Number(e.target.value) })}
                       className="w-full bg-bg border border-border hover:border-primary/50 focus:border-primary outline-none text-content rounded-lg px-4 py-3 transition-colors"
                     />
                   </div>
